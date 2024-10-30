@@ -24,6 +24,8 @@ class QuadrifocalEstimator {
         x3s.resize(sample_sz);
         x4s.resize(sample_sz);
         sample.resize(sample_sz);
+
+        rng.seed(0);
     }
 
     struct Reconstruction {
