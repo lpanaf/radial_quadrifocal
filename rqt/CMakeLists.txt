@@ -24,6 +24,7 @@ set(HEADERS_PUBLIC
     upright_filter_cheirality.h
     types.h
     ransac_impl.h
+    manifold.h
 )
 
 # library configuration

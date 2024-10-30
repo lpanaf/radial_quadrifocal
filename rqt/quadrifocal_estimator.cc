@@ -7,6 +7,7 @@
 #include "metric_upgrade.h"
 #include "upright_filter_cheirality.h"
 #include <ceres/ceres.h>
+#include "manifold.h"
 
 namespace rqt {
 
@@ -260,15 +261,19 @@ void QuadrifocalEstimator::refine_model(Reconstruction *rec) const {
         return;
     }
       
-    problem.SetParameterization(q1.coeffs().data(), new ceres::EigenQuaternionParameterization());
-    problem.SetParameterization(q2.coeffs().data(), new ceres::EigenQuaternionParameterization());
-    problem.SetParameterization(q3.coeffs().data(), new ceres::EigenQuaternionParameterization());
-    problem.SetParameterization(q4.coeffs().data(), new ceres::EigenQuaternionParameterization());
-
+    // problem.SetParameterization(q1.coeffs().data(), new ceres::EigenQuaternionParameterization());
+    // problem.SetParameterization(q2.coeffs().data(), new ceres::EigenQuaternionParameterization());
+    // problem.SetParameterization(q3.coeffs().data(), new ceres::EigenQuaternionParameterization());
+    // problem.SetParameterization(q4.coeffs().data(), new ceres::EigenQuaternionParameterization());
+    SetEigenQuaternionManifold(&problem, q1.coeffs().data());
+    SetEigenQuaternionManifold(&problem, q2.coeffs().data());
+    SetEigenQuaternionManifold(&problem, q3.coeffs().data());
+    SetEigenQuaternionManifold(&problem, q4.coeffs().data());
     // Fix gauge-freedom
     problem.SetParameterBlockConstant(q1.coeffs().data());
     problem.SetParameterBlockConstant(t1.data());
-    problem.SetParameterization(t2.data(), new ceres::SubsetParameterization(2, {0}));
+    // problem.SetParameterization(t2.data(), new ceres::SubsetParameterization(2, {0}));
+    SetSubsetManifold(2, {0}, &problem, t2.data());
 
     ceres::Solver::Options options;
     options.linear_solver_type = ceres::SPARSE_SCHUR;
